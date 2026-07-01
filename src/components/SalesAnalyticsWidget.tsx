@@ -163,13 +163,16 @@ export function SalesAnalyticsWidget() {
     setPage(1);
   }
 
-  function formatCurrency(amount: number) {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      maximumFractionDigits: 0,
-    }).format(amount);
-  }
+  const currency = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    maximumFractionDigits: 0,
+  });
+
+  const rows = data;
+  const totalRevenue = rows.reduce((sum, r) => sum + r.revenue, 0);
+  const avgUnits = Math.round(rows.reduce((sum, r) => sum + r.units, 0) / rows.length);
+  const topProduct = rows.reduce((top, r) => r.revenue > top.revenue ? r : top, rows[0]);
 
   return (
     <Card padding="lg">
@@ -197,6 +200,29 @@ export function SalesAnalyticsWidget() {
           onChange={handleRangeChange}
           options={RANGE_OPTIONS}
         />
+      </div>
+
+      {/* Summary stats row */}
+      <div style={{ display: 'flex', gap: tokens.spacing.md, marginBottom: tokens.spacing.lg }}>
+        {[
+          { label: 'Total Revenue', value: currency.format(totalRevenue) },
+          { label: 'Avg Units Sold', value: avgUnits.toLocaleString() },
+          { label: 'Top Performer', value: topProduct.product },
+        ].map(({ label, value }) => (
+          <div
+            key={label}
+            style={{
+              flex: 1,
+              padding: tokens.spacing.md,
+              background: tokens.color.surfaceSubtle,
+              borderRadius: tokens.radii.md,
+              border: `1px solid ${tokens.color.cardBorder}`,
+            }}
+          >
+            <Typography variant="caption" tone="secondary">{label}</Typography>
+            <Typography variant="title">{value}</Typography>
+          </div>
+        ))}
       </div>
 
       {/* Bar chart */}
@@ -264,7 +290,7 @@ export function SalesAnalyticsWidget() {
                   fontSize: '0.8125rem',
                 }}
               >
-                {formatCurrency(row.revenue)}
+                {currency.format(row.revenue)}
               </td>
               <td
                 style={{
