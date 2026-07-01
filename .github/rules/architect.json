@@ -1,0 +1,7 @@
+{
+  "maxBundleSizeKb": 15,
+  "disallowedImports": ["chart.js", "recharts", "d3", "highcharts"],
+  "requiredTestCoverage": 80,
+  "designSystem": "src/design-system/index.ts",
+  "notes": "Use only design system primitives for UI. Charts must use native canvas with design tokens."
+}

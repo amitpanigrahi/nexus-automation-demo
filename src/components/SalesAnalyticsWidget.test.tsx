@@ -1,0 +1,72 @@
+import { describe, it, expect } from 'vitest';
+import { render, screen, fireEvent } from '@testing-library/react';
+import { readFileSync } from 'fs';
+import path from 'path';
+import { SalesAnalyticsWidget } from './SalesAnalyticsWidget';
+
+describe('SalesAnalyticsWidget', () => {
+  it('renders the widget with default range (30d)', () => {
+    render(<SalesAnalyticsWidget />);
+
+    // Heading is present
+    expect(screen.getByText('Sales Analytics')).toBeInTheDocument();
+
+    // Default select value is 30d
+    const select = screen.getByRole('combobox');
+    expect((select as HTMLSelectElement).value).toBe('30d');
+
+    // First row of 30d data should be visible
+    expect(screen.getByText('Aurora Plan')).toBeInTheDocument();
+  });
+
+  it('changing the select changes visible rows', () => {
+    render(<SalesAnalyticsWidget />);
+
+    const select = screen.getByRole('combobox');
+
+    // Switch to 7d
+    fireEvent.change(select, { target: { value: '7d' } });
+
+    // Revenue values differ between ranges — 7d Aurora revenue is $12,400
+    expect(screen.getByText('$12,400')).toBeInTheDocument();
+
+    // Switch to 90d
+    fireEvent.change(select, { target: { value: '90d' } });
+
+    // 90d Aurora revenue is $148,000
+    expect(screen.getByText('$148,000')).toBeInTheDocument();
+  });
+
+  it('pagination works correctly — page 2 shows different rows than page 1', () => {
+    render(<SalesAnalyticsWidget />);
+
+    // PAGE_SIZE = 3, so page 1 shows rows 0-2 (Aurora, Borealis, Cirrus)
+    expect(screen.getByText('Aurora Plan')).toBeInTheDocument();
+    expect(screen.getByText('Borealis Plan')).toBeInTheDocument();
+    expect(screen.getByText('Cirrus Plan')).toBeInTheDocument();
+
+    // Delta and Echo are NOT on page 1
+    expect(screen.queryByText('Delta Plan')).not.toBeInTheDocument();
+    expect(screen.queryByText('Echo Plan')).not.toBeInTheDocument();
+
+    // Navigate to page 2
+    fireEvent.click(screen.getByRole('button', { name: /next page/i }));
+
+    // Page 2 shows rows 3-4 (Delta, Echo)
+    expect(screen.getByText('Delta Plan')).toBeInTheDocument();
+    expect(screen.getByText('Echo Plan')).toBeInTheDocument();
+
+    // Aurora is no longer visible on page 2
+    expect(screen.queryByText('Aurora Plan')).not.toBeInTheDocument();
+  });
+
+  it('does not import chart.js in the component file', () => {
+    const componentPath = path.resolve(__dirname, 'SalesAnalyticsWidget.tsx');
+    const source = readFileSync(componentPath, 'utf-8');
+
+    expect(source).not.toContain("'chart.js'");
+    expect(source).not.toContain('"chart.js"');
+    expect(source).not.toContain("from 'chart.js/auto'");
+    expect(source).not.toContain('from "chart.js/auto"');
+  });
+});

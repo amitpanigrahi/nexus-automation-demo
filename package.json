@@ -1,0 +1,33 @@
+{
+  "name": "nexus-automation-demo",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "test": "vitest run --coverage",
+    "test:watch": "vitest",
+    "guardrails": "node scripts/verify-guardrails.mjs",
+    "lint": "eslint src"
+  },
+  "dependencies": {
+    "next": "14.2.35",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^6.4.2",
+    "@testing-library/react": "^16.3.1",
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "@vitejs/plugin-react": "^4.3.1",
+    "@vitest/coverage-v8": "^2.1.9",
+    "happy-dom": "^20.10.6",
+    "typescript": "^5",
+    "vitest": "^2.1.9"
+  },
+  "overrides": {
+    "debug": "3.1.0"
+  }
+}
