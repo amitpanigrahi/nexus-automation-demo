@@ -1,6 +1,57 @@
 # Nexus Automation Demo
 
-A demo app for showcasing the `/nexus-automation` autonomous SDLC pipeline.
+A demo app for showcasing the `/nexus-automation` autonomous SDLC pipeline — a full Discovery → PRD → HLD → Implementation → Verification → PR workflow driven by a single prompt.
+
+## Using the Skill
+
+### Prerequisites
+
+[Claude Code](https://claude.ai/code) CLI installed and authenticated:
+
+```bash
+npm install -g @anthropic-ai/claude-code
+claude login
+```
+
+### Install the skill
+
+Copy the skill file to your Claude skills directory:
+
+```bash
+mkdir -p ~/.claude/skills/nexus-automation
+cp .claude/skills/nexus-automation.md ~/.claude/skills/nexus-automation/SKILL.md
+```
+
+Or install globally so it's available in any project:
+
+```bash
+mkdir -p ~/.claude/skills/nexus-automation
+curl -o ~/.claude/skills/nexus-automation/SKILL.md \
+  https://raw.githubusercontent.com/amitpanigrahi/nexus-automation-demo/main/.claude/skills/nexus-automation.md
+```
+
+### Use it
+
+Open Claude Code in this repo and run:
+
+```
+/nexus-automation "your feature request here"
+```
+
+The pipeline will run through 6 stages automatically and pause for your approval before pushing anything to GitHub.
+
+### What it does
+
+| Stage | What happens |
+|---|---|
+| 🔍 Discovery | Analyzes the repo — files, design system, guardrails |
+| 📋 PRD | Generates acceptance criteria from your request |
+| 🏗️ HLD | Designs the architecture — which files to touch and how |
+| 🛠️ Implementation | Writes the code, runs tests and guardrail checks |
+| ✅ Verification | Reviews all ACs, security, and code quality |
+| 🚀 Pull Request | Commits and opens a draft PR — **asks your approval first** |
+
+Every external action (push, PR, Figma, Jira, Slack) requires explicit approval. All actions are logged to `.nexus-automation/audit.log`.
 
 ## The Demo
 
