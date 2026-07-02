@@ -296,9 +296,14 @@ export function SalesAnalyticsWidget() {
           alignItems: 'center',
         }}
       >
-        <Typography variant="caption" tone="secondary">
-          Page {page} of {totalPages}
-        </Typography>
+        <div>
+          <Typography variant="caption" tone="secondary" as="p">
+            Showing {startIndex + 1}-{Math.min(startIndex + PAGE_SIZE, data.length)} of {data.length} records
+          </Typography>
+          <Typography variant="caption" tone="secondary" as="p">
+            Page {page} of {totalPages}
+          </Typography>
+        </div>
         <div style={{ display: 'flex', gap: tokens.spacing.sm }}>
           <button
             onClick={() => setPage(p => Math.max(1, p - 1))}
