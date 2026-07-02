@@ -60,6 +60,17 @@ describe('SalesAnalyticsWidget', () => {
     expect(screen.queryByText('Aurora Plan')).not.toBeInTheDocument();
   });
 
+  it('announces page changes to screen readers via an aria-live region', () => {
+    render(<SalesAnalyticsWidget />);
+
+    const status = screen.getByRole('status');
+    expect(status).toHaveTextContent('Page 1 of 2');
+
+    fireEvent.click(screen.getByRole('button', { name: /next page/i }));
+
+    expect(status).toHaveTextContent('Page 2 of 2');
+  });
+
   it('does not import chart.js in the component file', () => {
     const componentPath = path.resolve(__dirname, 'SalesAnalyticsWidget.tsx');
     const source = readFileSync(componentPath, 'utf-8');
