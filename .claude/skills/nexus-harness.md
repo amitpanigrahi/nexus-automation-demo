@@ -4,6 +4,30 @@
 
 **Feature request:** $ARGUMENTS
 
+## Output Style
+- Clean, stage-by-stage summaries — same as `/nexus-automation`. No verbose agent logs, no restating this file back to the user.
+- Every stage below prints a header + 2-4 bullet points before moving on, even stages that finish instantly (e.g. classification is still one line).
+- Use emojis for stage headers, matching the table below. A stage is not "done" until its header + bullets have been printed — running the commands silently and summarizing at the end is not sufficient.
+- Review gates print their verdict inline (`✔ APPROVE` or `↻ REVISE — n findings`), not just at the very end.
+
+| Stage | Header |
+|---|---|
+| 0 — Classify + open run | `🧭 CLASSIFY` |
+| 1 — Gap protocol | `❓ GAP CHECK` |
+| 2 — Goal + Plan + review | `🎯 GOAL + PLAN` |
+| 3 — Implementation | `🛠️ IMPLEMENTATION` |
+| 4 — Verify + review | `✅ VERIFY` |
+| 5 — Ship | `🚀 SHIP` |
+
+Example:
+```
+🎯 GOAL + PLAN
+   ✔ goal.json — 2 criteria (npm test, npm run guardrails)
+   ✔ Plan: add caption to SalesAnalyticsWidget.tsx, extend existing test
+   ↻ REVIEW: REVISE — 1 finding (flex layout would break with 3rd child)
+   ✔ REVIEW: APPROVE — plan updated with shared wrapper container
+```
+
 ---
 
 ## What's different from /nexus-automation
@@ -102,6 +126,7 @@ Render `$RUN_DIR/progress.md` from `milestones.jsonl` as the last step, and incl
 ```
 
 ## Rules
+- Never skip a stage header — narrating in plain prose instead of the `Output Style` format is a bug, not a style choice, because it's how the user tells the harness is actually running stage-by-stage rather than being summarized after the fact.
 - Never skip Stage 1's gap check, even for `quick-fix`.
 - Never let the implementer be its own reviewer — `nexus-reviewer` runs in a fresh context every time.
 - Never mark a criterion PASS without having actually run its command in this session.
