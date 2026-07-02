@@ -60,6 +60,18 @@ describe('SalesAnalyticsWidget', () => {
     expect(screen.queryByText('Aurora Plan')).not.toBeInTheDocument();
   });
 
+  it('shows a record-count caption that updates with pagination', () => {
+    render(<SalesAnalyticsWidget />);
+
+    // Page 1: rows 1-3 of 5
+    expect(screen.getByText('Showing 1-3 of 5 records')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: /next page/i }));
+
+    // Page 2: rows 4-5 of 5
+    expect(screen.getByText('Showing 4-5 of 5 records')).toBeInTheDocument();
+  });
+
   it('does not import chart.js in the component file', () => {
     const componentPath = path.resolve(__dirname, 'SalesAnalyticsWidget.tsx');
     const source = readFileSync(componentPath, 'utf-8');
