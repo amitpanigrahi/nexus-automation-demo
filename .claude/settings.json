@@ -1,0 +1,28 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          { "type": "command", "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/nexus-branch-guard.sh", "timeout": 5 },
+          { "type": "command", "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/nexus-write-gate.sh", "timeout": 5 }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          { "type": "command", "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/nexus-secret-scan.sh", "timeout": 10 },
+          { "type": "command", "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/nexus-milestone-logger.sh", "timeout": 5 }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          { "type": "command", "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/nexus-milestone-logger.sh", "timeout": 5 }
+        ]
+      }
+    ]
+  }
+}
