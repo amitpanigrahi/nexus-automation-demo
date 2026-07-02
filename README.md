@@ -53,6 +53,20 @@ The pipeline will run through 6 stages automatically and pause for your approval
 
 Every external action (push, PR, Figma, Jira, Slack) requires explicit approval. All actions are logged to `.nexus-automation/audit.log`.
 
+## Nexus Harness (Advanced)
+
+`/nexus-harness` runs the same six stages but turns the guardrails that matter most — approval before external writes, never force-pushing, an audit trail — from prompt instructions into enforced Claude Code hooks, adds a `goal.json` contract with executable pass/fail criteria, and inserts an independent reviewer pass before anything ships. See [`docs/NEXUS_HARNESS.md`](docs/NEXUS_HARNESS.md) for the full comparison with v1.
+
+```bash
+mkdir -p ~/.claude/skills/nexus-harness ~/.claude/agents
+cp .claude/skills/nexus-harness.md ~/.claude/skills/nexus-harness/SKILL.md
+cp .claude/agents/nexus-reviewer.md ~/.claude/agents/nexus-reviewer.md
+```
+
+```
+/nexus-harness "your feature request here"
+```
+
 ## The Demo
 
 This app starts in a clean state. The demo adds a **summary stats row** (total revenue, average units, top performer) above the sales table — using the full autonomous pipeline:
